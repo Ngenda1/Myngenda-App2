@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyNgenda - Dashboard</title>
+  <style>
+    :root {
+      --primary-color: #43a047;
+      --primary-dark: #2e7d32;
+      --accent-color: #ffc107;
+      --text-color: #333;
+      --light-text: #666;
+      --lighter-text: #999;
+      --error-color: #f44336;
+      --success-color: #4caf50;
+      --border-color: #ddd;
+      --light-bg: #f5f5f5;
+      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background-color: #fff;
+      box-shadow: var(--card-shadow);
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
+      transition: all 0.3s;
+    }
+    
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .logo {
+      max-width: 150px;
+    }
+    
+    .sidebar-menu {
+      padding: 1.5rem 0;
+    }
+    
+    .menu-item {
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    
+    .menu-item:hover {
+      background-color: var(--light-bg);
+      color: var(--primary-color);
+    }
+    
+    .menu-item.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .menu-icon {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+    
+    .main-content {
+      flex: 1;
+      margin-left: 250px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .page-title {
+      font-size: 1.8rem;
+      color: var(--text-color);
+    }
+    
+    .user-menu {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    
+    .user-name {
+      font-weight: 500;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    
+    .button {
+      display: inline-block;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+    }
+    
+    .button:hover {
+      background: var(--primary-dark);
+    }
+    
+    .button-outline {
+      background: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .button-outline:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .delivery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .delivery-card {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .delivery-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .delivery-status {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-in-transit {
+      background-color: #cce5ff;
+      color: #004085;
+    }
+    
+    .status-delivered {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .delivery-details {
+      margin-bottom: 1rem;
+    }
+    
+    .delivery-detail {
+      display: flex;
+      margin-bottom: 0.5rem;
+    }
+    
+    .detail-label {
+      width: 100px;
+      font-weight: 500;
+      color: var(--light-text);
+    }
+    
+    .detail-value {
+      flex: 1;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--light-text);
+    }
+    
+    .empty-state-icon {
+      font-size: 3rem;
+      color: var(--lighter-text);
+      margin-bottom: 1rem;
+    }
+    
+    .empty-state-message {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .toggle-sidebar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 200;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      color: var(--light-text);
+      font-size: 0.9rem;
+    }
+    
+    .map-container {
+      height: 300px;
+      background-color: #e9ecef;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--light-text);
+    }
+    
+    .activity-list {
+      list-style: none;
+    }
+    
+    .activity-item {
+      display: flex;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .activity-icon.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .activity-icon.warning {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .activity-icon.info {
+      background-color: #cce5ff;
+      color: #004085;
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-title {
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+    }
+    
+    .activity-time {
+      font-size: 0.8rem;
+      color: var(--lighter-text);
+    }
+    
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .toggle-sidebar {
+        display: flex;
+      }
+      
+      .delivery-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .user-menu {
+        margin-top: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-sidebar" id="toggleSidebar">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+  
+  <div class="dashboard-container">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div style="font-size: 1.5rem; font-weight: bold; color: #43a047;">MyNgenda</div>
+      </div>
+      <div class="sidebar-menu">
+        <a href="#" class="menu-item active">
+          <span class="menu-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">📦</span>
+          My Deliveries
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">➕</span>
+          New Delivery
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">📍</span>
+          Track Delivery
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">💳</span>
+          Payment History
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">👤</span>
+          My Profile
+        </a>
+        <a href="#" class="menu-item" id="logoutButton">
+          <span class="menu-icon">🚪</span>
+          Logout
+        </a>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="page-header">
+        <h1 class="page-title" id="dashboardTitle">Dashboard</h1>
+        <div class="user-menu">
+          <div class="user-avatar" id="userInitials">U</div>
+          <span class="user-name" id="userName">User Name</span>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Active Deliveries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">1</div>
+          <div class="stat-label">In Transit</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">5</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">$250</div>
+          <div class="stat-label">Total Spent</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Delivery Map</h2>
+        </div>
+        <div class="map-container">
+          <p>Map visualization would appear here</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Recent Deliveries</h2>
+          <a href="#" class="button">View All</a>
+        </div>
+        
+        <div class="delivery-grid">
+          <div class="delivery-card">
+            <div class="delivery-status status-in-transit">In Transit</div>
+            <div class="delivery-details">
+              <div class="delivery-detail">
+                <div class="detail-label">ID:</div>
+                <div class="detail-value">DEL-001</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Pickup:</div>
+                <div class="detail-value">123 Main St, Nairobi</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Delivery:</div>
+                <div class="detail-value">456 Park Ave, Nairobi</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">ETA:</div>
+                <div class="detail-value">Today, 2:30 PM</div>
+              </div>
+            </div>
+            <a href="#" class="button button-outline">Track</a>
+          </div>
+          
+          <div class="delivery-card">
+            <div class="delivery-status status-pending">Pending</div>
+            <div class="delivery-details">
+              <div class="delivery-detail">
+                <div class="detail-label">ID:</div>
+                <div class="detail-value">DEL-002</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Pickup:</div>
+                <div class="detail-value">789 Oak St, Mombasa</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Delivery:</div>
+                <div class="detail-value">101 Beach Rd, Mombasa</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Schedule:</div>
+                <div class="detail-value">Tomorrow, 10:00 AM</div>
+              </div>
+            </div>
+            <a href="#" class="button button-outline">Cancel</a>
+          </div>
+          
+          <div class="delivery-card">
+            <div class="delivery-status status-delivered">Delivered</div>
+            <div class="delivery-details">
+              <div class="delivery-detail">
+                <div class="detail-label">ID:</div>
+                <div class="detail-value">DEL-003</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Pickup:</div>
+                <div class="detail-value">222 Hill Ave, Nakuru</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Delivery:</div>
+                <div class="detail-value">333 Valley Rd, Nakuru</div>
+              </div>
+              <div class="delivery-detail">
+                <div class="detail-label">Delivered:</div>
+                <div class="detail-value">Yesterday, 3:45 PM</div>
+              </div>
+            </div>
+            <a href="#" class="button button-outline">Review</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Recent Activity</h2>
+        </div>
+        
+        <ul class="activity-list">
+          <li class="activity-item">
+            <div class="activity-icon success">📦</div>
+            <div class="activity-content">
+              <div class="activity-title">Delivery DEL-003 has been completed</div>
+              <div class="activity-time">Yesterday, 3:45 PM</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-icon info">🚚</div>
+            <div class="activity-content">
+              <div class="activity-title">Driver assigned to delivery DEL-001</div>
+              <div class="activity-time">Today, 10:20 AM</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-icon warning">⏱️</div>
+            <div class="activity-content">
+              <div class="activity-title">Delivery DEL-002 scheduled for tomorrow</div>
+              <div class="activity-time">Today, 9:15 AM</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-icon info">💰</div>
+            <div class="activity-content">
+              <div class="activity-title">Payment received for delivery DEL-003</div>
+              <div class="activity-time">Yesterday, 2:30 PM</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/auth-connector.js"></script>
+  <script>
+    // Toggle sidebar on mobile
+    document.getElementById('toggleSidebar').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+    
+    // Check authentication and load user data
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is logged in
+      if (!window.authConnector.isAuthenticated()) {
+        // Redirect to login page if not authenticated
+        window.location.href = '/index.html';
+        return;
+      }
+      
+      // Get current user
+      const user = window.authConnector.getCurrentUser();
+      
+      // Display user info
+      const userInitials = document.getElementById('userInitials');
+      const userName = document.getElementById('userName');
+      const dashboardTitle = document.getElementById('dashboardTitle');
+      
+      if (user.firstName && user.lastName) {
+        userInitials.textContent = user.firstName.charAt(0) + user.lastName.charAt(0);
+        userName.textContent = user.firstName + ' ' + user.lastName;
+      } else if (user.email) {
+        userInitials.textContent = user.email.charAt(0).toUpperCase();
+        userName.textContent = user.email;
+      }
+      
+      // Set dashboard title based on role
+      if (user.role === 'admin') {
+        dashboardTitle.textContent = 'Admin Dashboard';
+      } else if (user.role === 'driver') {
+        dashboardTitle.textContent = 'Driver Dashboard';
+      } else {
+        dashboardTitle.textContent = 'Customer Dashboard';
+      }
+      
+      // Set up logout button
+      document.getElementById('logoutButton').addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        // Logout
+        await window.authConnector.logout();
+        
+        // Redirect to login page
+        window.location.href = '/index.html';
+      });
+    });
+  </script>
+</body>
+</html>

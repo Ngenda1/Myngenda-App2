@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="128" fill="white"/>
+  <g transform="translate(56, 156) scale(0.8)">
+    <!-- Gray Arrow -->
+    <path d="M100 0 L250 0 L350 100 L200 100 Z" fill="#444444"/>
+    <path d="M200 100 L350 100 L250 200 L100 200 Z" fill="#666666"/>
+    
+    <!-- Green Arrow -->
+    <path d="M250 0 L400 0 L500 100 L350 100 Z" fill="#43A047"/>
+    <path d="M350 100 L500 100 L400 200 L250 200 Z" fill="#66BB6A"/>
+  </g>
+</svg>
