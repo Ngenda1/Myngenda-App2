@@ -153,12 +153,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is authenticated
             if (!window.MyngendaAuth || !MyngendaAuth.isAuthenticated()) {
-                window.location.href = '/';
+                window.location.href = '/standalone-auth.html';
                 return;
             }
             
-            // Get current user
+            // Make sure user is a customer
             const user = MyngendaAuth.getCurrentUser();
+            if (user && user.role === 'driver') {
+                window.location.href = '/driver-dashboard.html';
+                return;
+            } else if (user && user.role === 'admin') {
+                window.location.href = '/admin-dashboard.html';
+                return;
+            }
             const userNameElement = document.getElementById('user-name');
             if (user && userNameElement) {
                 userNameElement.textContent = user.name || user.email;
