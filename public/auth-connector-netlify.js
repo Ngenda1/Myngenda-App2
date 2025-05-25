@@ -183,9 +183,11 @@
     }
     
     if (user.role === 'admin') {
-      window.location.href = '/admin';
+      window.location.href = 'admin-dashboard.html';
+    } else if (user.role === 'driver') {
+      window.location.href = 'driver-dashboard.html';
     } else {
-      window.location.href = '/dashboard.html';
+      window.location.href = 'customer-dashboard.html';
     }
   }
   

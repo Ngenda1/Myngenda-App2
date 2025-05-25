@@ -183,9 +183,9 @@
     }
     
     if (user.role === 'admin') {
-      window.location.href = '/admin';
+      window.location.href = 'dashboard.html';
     } else {
-      window.location.href = '/dashboard.html';
+      window.location.href = 'dashboard.html';
     }
   }
   
