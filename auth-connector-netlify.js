@@ -163,9 +163,29 @@
   }
   
   // Logout function
-  function logout() {
-    clearAuthData();
-    window.location.href = '/';
+  async function logout() {
+    try {
+      // Attempt to log out on the server first
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem(TOKEN_KEY)}`
+        },
+        credentials: 'include',
+        mode: 'cors'
+      }).catch(err => console.log('Server logout failed, continuing with local logout'));
+      
+      // Clear local storage regardless of server response
+      clearAuthData();
+      
+      // Redirect to home page
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still clear data and redirect even if there's an error
+      clearAuthData();
+      window.location.href = '/';
+    }
   }
   
   // Google authentication
