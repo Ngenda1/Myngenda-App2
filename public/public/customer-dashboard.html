@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyNgenda - Customer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f7f7;
+        }
+        .dashboard-header {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .package-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-shipped {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .welcome-message {
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .nav-item {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .nav-item i {
+            width: 24px;
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader mb-4"></div>
+        <p class="text-gray-600">Loading your packages...</p>
+    </div>
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar - visible on medium and larger screens -->
+        <div class="dashboard-header w-64 p-4 hidden md:flex flex-col">
+            <div class="text-xl font-bold mb-8">MyNgenda</div>
+            <nav class="flex-1">
+                <div class="nav-item active">
+                    <i class="fas fa-th-large mr-2"></i> Dashboard
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-box mr-2"></i> My Packages
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-plus mr-2"></i> Send Package
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-map-marker-alt mr-2"></i> Track Package
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-history mr-2"></i> History
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-user mr-2"></i> Profile
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-headset mr-2"></i> Support
+                </div>
+            </nav>
+            <div class="mt-auto pt-8">
+                <button id="logout-button" class="w-full bg-white text-green-700 px-4 py-2 rounded font-medium hover:bg-gray-100">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Header -->
+            <header class="dashboard-header p-4 shadow-md">
+                <div class="container mx-auto flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button class="md:hidden mr-4 text-white">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h1 class="text-xl font-bold md:hidden">MyNgenda</h1>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="relative mr-4">
+                            <i class="fas fa-bell text-white"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">2</span>
+                        </div>
+                        <span id="user-name" class="mr-2"></span>
+                        <img id="user-avatar" class="w-8 h-8 rounded-full bg-white" src="https://ui-avatars.com/api/?name=User&background=random" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="flex-1 overflow-y-auto p-4">
+                <div class="container mx-auto">
+                    <!-- Welcome Message -->
+                    <div class="welcome-message bg-white p-6 rounded-lg shadow-sm mb-8">
+                        <h2 class="text-2xl font-bold text-green-700 mb-2">Welcome to your Dashboard</h2>
+                        <p class="text-gray-600">Track and manage your package deliveries all in one place</p>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-semibold">Active Packages</h3>
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-green-700">3</p>
+                            <p class="text-sm text-gray-500">Packages in transit</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-semibold">Delivered</h3>
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-green-700">12</p>
+                            <p class="text-sm text-gray-500">Packages delivered this month</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-semibold">Saved Addresses</h3>
+                                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-green-700">5</p>
+                            <p class="text-sm text-gray-500">Saved delivery locations</p>
+                        </div>
+                    </div>
+
+                    <!-- Active Packages -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Your Packages</h3>
+                            <div class="flex space-x-2">
+                                <button class="bg-white px-3 py-1 rounded border border-gray-300 text-sm">
+                                    <i class="fas fa-filter mr-1"></i> Filter
+                                </button>
+                                <button class="bg-white px-3 py-1 rounded border border-gray-300 text-sm">
+                                    <i class="fas fa-sort mr-1"></i> Sort
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="packages-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Package 1 -->
+                            <div class="package-card p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-semibold">Electronics Package</h4>
+                                    <span class="status-badge status-shipped">Shipped</span>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-2">PKG-001</p>
+                                <div class="flex justify-between text-sm mb-3">
+                                    <div>
+                                        <p class="text-gray-500">From</p>
+                                        <p>Nairobi, Kenya</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">To</p>
+                                        <p>Lagos, Nigeria</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>Progress</span>
+                                        <span>75%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <div>
+                                        <p class="text-gray-500">Date</p>
+                                        <p>2025-05-22</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">ETA</p>
+                                        <p>2 days</p>
+                                    </div>
+                                </div>
+                                <button class="mt-4 w-full bg-blue-50 text-blue-600 py-2 rounded-md text-sm font-medium">
+                                    Track Package
+                                </button>
+                            </div>
+
+                            <!-- Package 2 -->
+                            <div class="package-card p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-semibold">Medical Supplies</h4>
+                                    <span class="status-badge status-pending">Pending</span>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-2">PKG-002</p>
+                                <div class="flex justify-between text-sm mb-3">
+                                    <div>
+                                        <p class="text-gray-500">From</p>
+                                        <p>Cairo, Egypt</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">To</p>
+                                        <p>Accra, Ghana</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>Progress</span>
+                                        <span>10%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 10%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <div>
+                                        <p class="text-gray-500">Date</p>
+                                        <p>2025-05-23</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">ETA</p>
+                                        <p>Awaiting Shipment</p>
+                                    </div>
+                                </div>
+                                <button class="mt-4 w-full bg-blue-50 text-blue-600 py-2 rounded-md text-sm font-medium">
+                                    Track Package
+                                </button>
+                            </div>
+
+                            <!-- Package 3 -->
+                            <div class="package-card p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-semibold">Business Documents</h4>
+                                    <span class="status-badge status-shipped">Shipped</span>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-2">PKG-004</p>
+                                <div class="flex justify-between text-sm mb-3">
+                                    <div>
+                                        <p class="text-gray-500">From</p>
+                                        <p>Casablanca, Morocco</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">To</p>
+                                        <p>Addis Ababa, Ethiopia</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>Progress</span>
+                                        <span>90%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <div>
+                                        <p class="text-gray-500">Date</p>
+                                        <p>2025-05-24</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">ETA</p>
+                                        <p>1 day</p>
+                                    </div>
+                                </div>
+                                <button class="mt-4 w-full bg-blue-50 text-blue-600 py-2 rounded-md text-sm font-medium">
+                                    Track Package
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Deliveries -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Recent Deliveries</h3>
+                            <button class="text-green-600 text-sm">View All History</button>
+                        </div>
+                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Personal Items</div>
+                                            <div class="text-sm text-gray-500">PKG-003</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Nairobi, Kenya</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">2025-05-20</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge status-delivered">Delivered</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Fashion Items</div>
+                                            <div class="text-sm text-gray-500">PKG-005</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Kigali, Rwanda</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">2025-05-19</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge status-cancelled">Cancelled</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Books Package</div>
+                                            <div class="text-sm text-gray-500">PKG-006</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Dar es Salaam, Tanzania</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">2025-05-15</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge status-delivered">Delivered</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                <i class="fas fa-box text-green-600 text-xl mb-2"></i>
+                                <span class="text-sm">Send Package</span>
+                            </button>
+                            <button class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                <i class="fas fa-search text-green-600 text-xl mb-2"></i>
+                                <span class="text-sm">Track Package</span>
+                            </button>
+                            <button class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                <i class="fas fa-history text-green-600 text-xl mb-2"></i>
+                                <span class="text-sm">Order History</span>
+                            </button>
+                            <button class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                <i class="fas fa-user-circle text-green-600 text-xl mb-2"></i>
+                                <span class="text-sm">Account</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="auth-connector-netlify.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated
+            if (!MyNgendaAuth.isAuthenticated()) {
+                window.location.href = 'standalone-auth.html';
+                return;
+            }
+            
+            // Get current user
+            const user = MyNgendaAuth.getCurrentUser();
+            
+            // Set user name
+            const userNameElement = document.getElementById('user-name');
+            if (userNameElement && user) {
+                userNameElement.textContent = user.name || user.email;
+            }
+            
+            // Set user avatar if available
+            if (user && user.profileImageUrl) {
+                const userAvatarElement = document.getElementById('user-avatar');
+                if (userAvatarElement) {
+                    userAvatarElement.src = user.profileImageUrl;
+                }
+            }
+            
+            // Logout button
+            document.getElementById('logout-button').addEventListener('click', function() {
+                MyNgendaAuth.logout();
+            });
+            
+            // Mobile menu toggle
+            const menuButton = document.querySelector('button.md\\:hidden');
+            const sidebar = document.querySelector('.dashboard-header.w-64');
+            
+            if (menuButton && sidebar) {
+                menuButton.addEventListener('click', function() {
+                    sidebar.classList.toggle('hidden');
+                    sidebar.classList.toggle('fixed');
+                    sidebar.classList.toggle('z-50');
+                    sidebar.classList.toggle('top-0');
+                    sidebar.classList.toggle('left-0');
+                    sidebar.classList.toggle('h-full');
+                });
+            }
+            
+            // Navigation items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Hide loading screen after everything is loaded
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

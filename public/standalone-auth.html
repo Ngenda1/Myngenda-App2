@@ -269,8 +269,14 @@
         </div>
     </div>
 
+    <script src="/auth-connector-netlify.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Auto-login if already authenticated
+            if (window.MyngendaAuth && MyngendaAuth.isAuthenticated()) {
+                MyngendaAuth.redirectToDashboard();
+            }
+            
             // Check if we should show the register form based on URL hash
             if(window.location.hash === '#register') {
                 document.getElementById('register-tab').click();
@@ -288,7 +294,7 @@
                 loginForm.classList.add('active');
                 registerForm.classList.remove('active');
                 window.location.hash = '';
-                hideError();
+                if(window.MyngendaAuth) MyngendaAuth.hideError();
             });
             
             registerTab.addEventListener('click', function() {
@@ -297,7 +303,7 @@
                 registerForm.classList.add('active');
                 loginForm.classList.remove('active');
                 window.location.hash = 'register';
-                hideError();
+                if(window.MyngendaAuth) MyngendaAuth.hideError();
             });
             
             // Password visibility toggles
@@ -406,39 +412,30 @@
             // Set initial account type selection
             accountTypeOptions[0].click();
             
-            // Show and hide error functions for demo
-            function showError(message) {
-                const errorElement = document.getElementById('auth-error');
-                errorElement.textContent = message;
-                errorElement.style.display = 'block';
-                
-                // Hide error after 5 seconds
-                setTimeout(() => {
-                    hideError();
-                }, 5000);
-            }
-            
-            function hideError() {
-                const errorElement = document.getElementById('auth-error');
-                errorElement.style.display = 'none';
-            }
-            
-            // Demo login form submission
-            document.getElementById('login-button').addEventListener('click', function() {
+            // Login form submission
+            document.getElementById('login-button').addEventListener('click', async function() {
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
                 
                 if (!email || !password) {
-                    showError('Please enter both email and password');
+                    MyngendaAuth.showError('Please enter both email and password');
                     return;
                 }
                 
-                // For demo purposes only
-                showError('This is a demo page. In the actual app, this would log you in.');
+                try {
+                    const success = await MyngendaAuth.login(email, password);
+                    if (success) {
+                        MyngendaAuth.redirectToDashboard();
+                    } else {
+                        MyngendaAuth.showError('Invalid email or password');
+                    }
+                } catch (error) {
+                    MyngendaAuth.showError('Login failed. Please try again.');
+                }
             });
             
-            // Demo register form submission
-            document.getElementById('register-button').addEventListener('click', function() {
+            // Register form submission
+            document.getElementById('register-button').addEventListener('click', async function() {
                 const name = document.getElementById('register-name').value;
                 const email = document.getElementById('register-email').value;
                 const password = document.getElementById('register-password').value;
@@ -446,40 +443,81 @@
                 const accountType = document.getElementById('account-type').value;
                 
                 if (!name || !email || !password || !confirm) {
-                    showError('Please fill in all fields');
+                    MyngendaAuth.showError('Please fill in all fields');
                     return;
                 }
                 
                 if (password !== confirm) {
-                    showError('Passwords do not match');
+                    MyngendaAuth.showError('Passwords do not match');
                     return;
                 }
                 
                 if (password.length < 6) {
-                    showError('Password must be at least 6 characters long');
+                    MyngendaAuth.showError('Password must be at least 6 characters long');
                     return;
                 }
                 
-                // For demo purposes only
-                showError('This is a demo page. In the actual app, this would create your ' + accountType + ' account.');
+                try {
+                    const success = await MyngendaAuth.register({
+                        name,
+                        email,
+                        password,
+                        role: accountType // Add account type to registration
+                    });
+                    
+                    if (success) {
+                        MyngendaAuth.redirectToDashboard();
+                    } else {
+                        MyngendaAuth.showError('Registration failed. Please try a different email.');
+                    }
+                } catch (error) {
+                    MyngendaAuth.showError('Registration failed. Please try again.');
+                }
             });
             
-            // Demo quick login buttons
-            document.getElementById('user-login').addEventListener('click', function() {
-                showError('This is a demo page. In the actual app, this would log you in as a customer.');
+            // Quick login buttons
+            document.getElementById('user-login').addEventListener('click', async function() {
+                try {
+                    const success = await MyngendaAuth.login('user@myngenda.com', 'user123');
+                    if (success) {
+                        MyngendaAuth.redirectToDashboard();
+                    } else {
+                        MyngendaAuth.showError('Quick login failed. Please try manual login.');
+                    }
+                } catch (error) {
+                    MyngendaAuth.showError('Login failed. Please try again.');
+                }
             });
             
-            document.getElementById('driver-login').addEventListener('click', function() {
-                showError('This is a demo page. In the actual app, this would log you in as a driver.');
+            document.getElementById('driver-login').addEventListener('click', async function() {
+                try {
+                    const success = await MyngendaAuth.login('driver@myngenda.com', 'driver123');
+                    if (success) {
+                        MyngendaAuth.redirectToDashboard();
+                    } else {
+                        MyngendaAuth.showError('Quick login failed. Please try manual login.');
+                    }
+                } catch (error) {
+                    MyngendaAuth.showError('Login failed. Please try again.');
+                }
             });
             
-            document.getElementById('admin-login').addEventListener('click', function() {
-                showError('This is a demo page. In the actual app, this would log you in as an admin.');
+            document.getElementById('admin-login').addEventListener('click', async function() {
+                try {
+                    const success = await MyngendaAuth.login('admin@myngenda.com', 'admin123');
+                    if (success) {
+                        MyngendaAuth.redirectToDashboard();
+                    } else {
+                        MyngendaAuth.showError('Quick login failed. Please try manual login.');
+                    }
+                } catch (error) {
+                    MyngendaAuth.showError('Login failed. Please try again.');
+                }
             });
             
-            // Demo Google login
+            // Google login
             document.getElementById('google-login').addEventListener('click', function() {
-                showError('This is a demo page. In the actual app, this would open Google login.');
+                MyngendaAuth.googleAuth();
             });
         });
     </script>

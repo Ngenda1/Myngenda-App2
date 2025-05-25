@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myngenda - Authentication</title>
+    <title>MyNgenda - Authentication</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
@@ -28,23 +28,22 @@
             transition: border-color 0.3s;
         }
         .auth-input:focus {
-            outline: none;
             border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            outline: none;
         }
         .auth-button {
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
-            padding: 12px;
+            padding: 10px 12px;
             width: 100%;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         .auth-button:hover {
-            background-color: #3d8b40;
+            background-color: #3e9142;
         }
         .auth-link {
             color: #4CAF50;
@@ -59,6 +58,7 @@
             justify-content: space-between;
         }
         .quick-login-button {
+            width: 48%;
             padding: 8px;
             text-align: center;
             border-radius: 4px;
@@ -489,9 +489,9 @@
                 }
             });
             
-            document.getElementById('driver-login').addEventListener('click', async function() {
+            document.getElementById('admin-login').addEventListener('click', async function() {
                 try {
-                    const success = await MyngendaAuth.login('driver@myngenda.com', 'driver123');
+                    const success = await MyngendaAuth.login('admin@myngenda.com', 'admin123');
                     if (success) {
                         MyngendaAuth.redirectToDashboard();
                     } else {
@@ -502,9 +502,10 @@
                 }
             });
             
-            document.getElementById('admin-login').addEventListener('click', async function() {
+            // Added driver quick login
+            document.getElementById('driver-login').addEventListener('click', async function() {
                 try {
-                    const success = await MyngendaAuth.login('admin@myngenda.com', 'admin123');
+                    const success = await MyngendaAuth.login('driver@myngenda.com', 'driver123');
                     if (success) {
                         MyngendaAuth.redirectToDashboard();
                     } else {
