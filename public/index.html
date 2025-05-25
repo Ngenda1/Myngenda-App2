@@ -3,24 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyNgenda - Package Delivery for Africa</title>
+    <title>Myngenda - Package Delivery for Africa</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="myngenda-icon.png" type="image/png">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .hero-section {
+            position: relative;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                              url('official-cover.png');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 2rem 0;
+        }
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .delivery-services {
+            font-size: 3rem;
+            font-weight: 600;
+            color: #4CAF50;
+            margin-bottom: 1rem;
+        }
+        .hero-subtitle {
+            font-size: 1.75rem;
+            color: white;
+            margin-bottom: 2.5rem;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 640px) {
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 3.5rem !important;
+            }
+            
+            .delivery-services {
+                font-size: 2rem !important;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.5rem !important;
+            }
+        }
+        
+        .login-button {
             background-color: #4CAF50;
             color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
         }
-        .cta-button {
-            background-color: #ffffff;
-            color: #4CAF50;
-            transition: all 0.3s;
+        
+        .login-button:hover {
+            background-color: #3e9142;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .cta-button:hover {
-            background-color: #e6e6e6;
-            transform: translateY(-2px);
+        
+        .register-button {
+            background-color: white;
+            color: #333;
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .register-button:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .feature-card {
             border-radius: 8px;
@@ -51,41 +140,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <header class="bg-white shadow-sm">
+    <header class="absolute top-0 left-0 w-full z-10">
         <nav class="container mx-auto p-4 flex justify-between items-center">
-            <div class="text-xl font-bold text-green-600">MyNgenda</div>
+            <div class="text-xl font-bold text-white">Myngenda</div>
             <div class="hidden md:flex space-x-6">
-                <a href="#features" class="text-gray-600 hover:text-green-600">Features</a>
-                <a href="#how-it-works" class="text-gray-600 hover:text-green-600">How It Works</a>
-                <a href="#testimonials" class="text-gray-600 hover:text-green-600">Testimonials</a>
-                <a href="#contact" class="text-gray-600 hover:text-green-600">Contact</a>
-            </div>
-            <div class="flex space-x-3">
-                <a href="standalone-auth.html" class="px-4 py-2 text-green-600 border border-green-600 rounded hover:bg-green-50">Login</a>
-                <a href="standalone-auth.html#register" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Register</a>
+                <a href="#features" class="text-white hover:text-green-300">Features</a>
+                <a href="#how-it-works" class="text-white hover:text-green-300">How It Works</a>
+                <a href="#testimonials" class="text-white hover:text-green-300">Testimonials</a>
+                <a href="#contact" class="text-white hover:text-green-300">Contact</a>
             </div>
         </nav>
     </header>
 
-    <section class="hero-section py-16 md:py-24">
-        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-            <div class="md:w-1/2 mb-8 md:mb-0">
-                <h1 class="text-3xl md:text-5xl font-bold mb-4">Reliable Package Delivery Across Africa</h1>
-                <p class="text-lg mb-8 opacity-90">MyNgenda makes shipping packages within Africa simple, affordable, and reliable.</p>
-                <div class="flex space-x-4">
-                    <a href="standalone-auth.html#register" class="cta-button px-6 py-3 rounded font-medium">Get Started</a>
-                    <a href="#how-it-works" class="px-6 py-3 border border-white rounded font-medium hover:bg-white hover:bg-opacity-10">Learn More</a>
-                </div>
-            </div>
-            <div class="md:w-1/2">
-                <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Package Delivery" class="rounded-lg shadow-lg w-full">
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Myngenda</h1>
+            <p class="delivery-services">Delivery Services</p>
+            <p class="hero-subtitle">Speed Meets Trust</p>
+            <div class="cta-buttons">
+                <a href="standalone-auth.html" class="login-button">Login</a>
+                <a href="standalone-auth.html#register" class="register-button">Register</a>
             </div>
         </div>
     </section>
 
     <section id="features" class="py-16 bg-gray-50">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">Why Choose MyNgenda</h2>
+            <h2 class="text-3xl font-bold text-center mb-12">Why Choose Myngenda</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="feature-card bg-white p-6">
                     <div class="feature-icon">
@@ -135,7 +216,7 @@
 
     <section id="how-it-works" class="py-16">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">How MyNgenda Works</h2>
+            <h2 class="text-3xl font-bold text-center mb-12">How Myngenda Works</h2>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
                 <div>
                     <div class="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
@@ -176,7 +257,7 @@
                             <p class="text-gray-600 text-sm">Nairobi, Kenya</p>
                         </div>
                     </div>
-                    <p class="text-gray-600">"MyNgenda made sending important documents to Lagos incredibly easy. The tracking was spot on, and the package arrived faster than expected."</p>
+                    <p class="text-gray-600">"Myngenda made sending important documents to Lagos incredibly easy. The tracking was spot on, and the package arrived faster than expected."</p>
                     <div class="mt-4 text-yellow-400">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -193,7 +274,7 @@
                             <p class="text-gray-600 text-sm">Accra, Ghana</p>
                         </div>
                     </div>
-                    <p class="text-gray-600">"As a small business owner, reliable shipping is essential. MyNgenda has been a game-changer for my online store, allowing me to ship to customers across Africa."</p>
+                    <p class="text-gray-600">"As a small business owner, reliable shipping is essential. Myngenda has been a game-changer for my online store, allowing me to ship to customers across Africa."</p>
                     <div class="mt-4 text-yellow-400">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -210,7 +291,7 @@
                             <p class="text-gray-600 text-sm">Johannesburg, SA</p>
                         </div>
                     </div>
-                    <p class="text-gray-600">"I've tried many delivery services, but MyNgenda stands out for their excellent customer service and competitive pricing. Highly recommended!"</p>
+                    <p class="text-gray-600">"I've tried many delivery services, but Myngenda stands out for their excellent customer service and competitive pricing. Highly recommended!"</p>
                     <div class="mt-4 text-yellow-400">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -286,7 +367,7 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
-                    <h3 class="text-xl font-semibold mb-4">MyNgenda</h3>
+                    <h3 class="text-xl font-semibold mb-4">Myngenda</h3>
                     <p class="mb-4 opacity-80">Reliable package delivery services across Africa.</p>
                     <div class="flex space-x-4">
                         <a href="#" class="opacity-80 hover:opacity-100">
@@ -332,17 +413,17 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 pt-6 text-center opacity-80">
-                <p>&copy; 2025 MyNgenda. All rights reserved.</p>
+                <p>&copy; 2025 Myngenda. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <script src="auth-connector-netlify.js"></script>
+    <script src="/auth-connector-netlify.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is already authenticated
-            if (window.MyNgendaAuth && MyNgendaAuth.isAuthenticated()) {
-                MyNgendaAuth.redirectToDashboard();
+            if (window.MyngendaAuth && MyngendaAuth.isAuthenticated()) {
+                MyngendaAuth.redirectToDashboard();
             }
         });
     </script>
