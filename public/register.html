@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myngenda Registration</title>
+    <!-- Keep your existing styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <img src="/icons/myngenda-icon.png" alt="Myngenda Logo" onerror="this.src='/public/icon.png'">
+        </div>
+        
+        <h1>Create Account</h1>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" id="phoneNumber" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+                <div class="password-toggle" onclick="togglePasswordVisibility()">
+                    <i class="show-password-icon">Show</i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" required>
+                    <option value="user">User</option>
+                    <option value="driver">Driver</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn primary">Register</button>
+            
+            <div id="errorMessage" class="error-message"></div>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? <a href="/login.html">Login</a>
+        </div>
+    </div>
+    
+    <!-- Add the standalone authentication script -->
+    <script src="/standalone-auth.js"></script>
+    
+    <script>
+        // Password visibility toggle
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.show-password-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'Hide';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'Show';
+            }
+        }
+        
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            if (MyngendaAuth.isAuthenticated()) {
+                MyngendaAuth.redirectToDashboard();
+            }
+        });
+
+        // Handle registration form submission
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.style.display = 'none';
+            
+            // Simple validation
+            if (!firstName || !lastName || !email || !phoneNumber || !password) {
+                errorMessage.textContent = 'Please fill in all fields';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Email validation
+            if (!email.includes('@')) {
+                errorMessage.textContent = 'Please enter a valid email address';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Show loading state
+            const button = this.querySelector('button');
+            const originalText = button.textContent;
+            button.textContent = 'Creating Account...';
+            button.disabled = true;
+            
+            try {
+                const result = await MyngendaAuth.register({
+                    firstName,
+                    lastName,
+                    email,
+                    phoneNumber,
+                    password,
+                    role
+                });
+                
+                if (result.success) {
+                    // Success - redirect to dashboard
+                    MyngendaAuth.redirectToDashboard();
+                } else {
+                    // Show error
+                    errorMessage.textContent = result.message || 'Registration failed. Please try again.';
+                    errorMessage.style.display = 'block';
+                    
+                    // Reset button
+                    button.textContent = originalText;
+                    button.disabled = false;
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+                
+                // Reset button
+                button.textContent = originalText;
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

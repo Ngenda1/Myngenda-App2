@@ -448,13 +448,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is authenticated
-            if (!MyNgendaAuth.isAuthenticated()) {
+            if (!window.MyngendaAuth || !MyngendaAuth.isAuthenticated()) {
                 window.location.href = 'standalone-auth.html';
                 return;
             }
             
             // Get current user
-            const user = MyNgendaAuth.getCurrentUser();
+            const user = MyngendaAuth.getCurrentUser();
             
             // Set user name
             const userNameElement = document.getElementById('user-name');
@@ -472,7 +472,7 @@
             
             // Logout button
             document.getElementById('logout-button').addEventListener('click', function() {
-                MyNgendaAuth.logout();
+                MyngendaAuth.logout();
             });
             
             // Mobile menu toggle

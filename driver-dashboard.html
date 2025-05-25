@@ -521,12 +521,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is authenticated and is a driver
-            if (!MyNgendaAuth.isAuthenticated()) {
+            if (!window.MyngendaAuth || !MyngendaAuth.isAuthenticated()) {
                 window.location.href = 'standalone-auth.html';
                 return;
             }
             
-            const user = MyNgendaAuth.getCurrentUser();
+            const user = MyngendaAuth.getCurrentUser();
             if (!user || user.role !== 'driver') {
                 window.location.href = 'dashboard.html';
                 return;
@@ -548,7 +548,7 @@
             
             // Logout button
             document.getElementById('logout-button').addEventListener('click', function() {
-                MyNgendaAuth.logout();
+                MyngendaAuth.logout();
             });
             
             // Mobile menu toggle
