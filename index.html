@@ -5,22 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Myngenda - Package Delivery for Africa</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="myngenda-icon.png" type="image/png">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .hero-section {
             position: relative;
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                              url('https://images.unsplash.com/photo-1525652777837-fc429d77107e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+                              url('https://images.pexels.com/photos/4391470/pexels-photo-4391470.jpeg');
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            min-height: 100vh;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
+            padding: 2rem 0;
         }
         .hero-content {
             text-align: center;
@@ -48,6 +52,28 @@
             display: flex;
             justify-content: center;
             gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 640px) {
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 3.5rem !important;
+            }
+            
+            .delivery-services {
+                font-size: 2rem !important;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.5rem !important;
+            }
         }
         
         .login-button {
@@ -59,6 +85,7 @@
             font-size: 1.1rem;
             text-decoration: none;
             transition: all 0.3s ease;
+            display: inline-block;
         }
         
         .login-button:hover {
@@ -76,6 +103,7 @@
             font-size: 1.1rem;
             text-decoration: none;
             transition: all 0.3s ease;
+            display: inline-block;
         }
         
         .register-button:hover {
