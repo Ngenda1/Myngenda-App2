@@ -59,7 +59,7 @@
       // Handle 401 by clearing auth data
       if (response.status === 401) {
         clearAuthData();
-        window.location.href = '/';
+        window.location.href = './';
         return null;
       }
       
@@ -74,7 +74,7 @@
         
         // Test user account fallback
         if (body.email === 'user@myngenda.com' && body.password === 'user123') {
-          const mockUser = { id: 'test-user-123', email: body.email, role: 'user', name: 'Test User' };
+          const mockUser = { id: 'test-user-123', email: body.email, role: 'customer', name: 'Test User' };
           const mockToken = 'mock-jwt-token-for-test-user';
           storeAuthData(mockUser, mockToken);
           return { user: mockUser, token: mockToken };
@@ -84,6 +84,14 @@
         if (body.email === 'admin@myngenda.com' && body.password === 'admin123') {
           const mockUser = { id: 'test-admin-123', email: body.email, role: 'admin', name: 'Test Admin' };
           const mockToken = 'mock-jwt-token-for-test-admin';
+          storeAuthData(mockUser, mockToken);
+          return { user: mockUser, token: mockToken };
+        }
+
+        // Test driver account fallback
+        if (body.email === 'driver@myngenda.com' && body.password === 'driver123') {
+          const mockUser = { id: 'test-driver-123', email: body.email, role: 'driver', name: 'Test Driver' };
+          const mockToken = 'mock-jwt-token-for-test-driver';
           storeAuthData(mockUser, mockToken);
           return { user: mockUser, token: mockToken };
         }
@@ -111,7 +119,7 @@
       console.error('Login failed:', error);
       // If API call fails completely, check for test accounts
       if (email === 'user@myngenda.com' && password === 'user123') {
-        const mockUser = { id: 'test-user-123', email, role: 'user', name: 'Test User' };
+        const mockUser = { id: 'test-user-123', email, role: 'customer', name: 'Test User' };
         const mockToken = 'mock-jwt-token-for-test-user';
         storeAuthData(mockUser, mockToken);
         return true;
@@ -120,6 +128,13 @@
       if (email === 'admin@myngenda.com' && password === 'admin123') {
         const mockUser = { id: 'test-admin-123', email, role: 'admin', name: 'Test Admin' };
         const mockToken = 'mock-jwt-token-for-test-admin';
+        storeAuthData(mockUser, mockToken);
+        return true;
+      }
+
+      if (email === 'driver@myngenda.com' && password === 'driver123') {
+        const mockUser = { id: 'test-driver-123', email, role: 'driver', name: 'Test Driver' };
+        const mockToken = 'mock-jwt-token-for-test-driver';
         storeAuthData(mockUser, mockToken);
         return true;
       }
@@ -151,7 +166,7 @@
           id: 'new-user-' + Date.now(), 
           email: userData.email, 
           name: userData.name || 'New User', 
-          role: 'user' 
+          role: userData.role || 'customer' 
         };
         const mockToken = 'mock-jwt-token-for-new-user-' + Date.now();
         storeAuthData(mockUser, mockToken);
@@ -165,7 +180,7 @@
   // Logout function
   function logout() {
     clearAuthData();
-    window.location.href = '/';
+    window.location.href = './';
   }
   
   // Google authentication
@@ -178,14 +193,16 @@
     const user = getCurrentUser();
     
     if (!user) {
-      window.location.href = '/';
+      window.location.href = './';
       return;
     }
     
     if (user.role === 'admin') {
-      window.location.href = 'dashboard.html';
+      window.location.href = 'admin-dashboard.html';
+    } else if (user.role === 'driver') {
+      window.location.href = 'driver-dashboard.html';
     } else {
-      window.location.href = 'dashboard.html';
+      window.location.href = 'customer-dashboard.html';
     }
   }
   
@@ -200,6 +217,10 @@
       setTimeout(() => {
         errorElement.style.display = 'none';
       }, 5000);
+    } else {
+      // Fallback if element doesn't exist
+      console.error('Error:', message);
+      alert(message);
     }
   }
   
