@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyNgenda - Authentication</title>
+    <title>Myngenda - Authentication</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
@@ -28,22 +28,23 @@
             transition: border-color 0.3s;
         }
         .auth-input:focus {
-            border-color: #4CAF50;
             outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
         }
         .auth-button {
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
-            padding: 10px 12px;
+            padding: 12px;
             width: 100%;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         .auth-button:hover {
-            background-color: #3e9142;
+            background-color: #3d8b40;
         }
         .auth-link {
             color: #4CAF50;
@@ -58,7 +59,6 @@
             justify-content: space-between;
         }
         .quick-login-button {
-            width: 48%;
             padding: 8px;
             text-align: center;
             border-radius: 4px;
@@ -80,6 +80,14 @@
         }
         .user-button:hover {
             background-color: #c8e6c9;
+        }
+        .driver-button {
+            background-color: #e3f2fd;
+            color: #2196F3;
+            border: 1px solid #bbdefb;
+        }
+        .driver-button:hover {
+            background-color: #bbdefb;
         }
         .auth-tabs {
             display: flex;
@@ -137,8 +145,8 @@
 <body class="flex items-center justify-center min-h-screen p-4">
     <div class="auth-container p-6 w-full">
         <div class="text-center mb-6">
-            <h1 class="auth-header text-2xl mb-2">MyNgenda</h1>
-            <p class="text-gray-600">Package Delivery Service</p>
+            <h1 class="auth-header text-2xl mb-2">Myngenda</h1>
+            <p class="text-gray-600">Delivery Services</p>
         </div>
 
         <div id="auth-error"></div>
@@ -155,7 +163,25 @@
             </div>
             <div class="mb-6">
                 <label for="login-password" class="block text-gray-700 mb-2">Password</label>
-                <input type="password" id="login-password" class="auth-input" placeholder="Your password">
+                <div class="relative">
+                    <input type="password" id="login-password" class="auth-input" placeholder="Your password">
+                    <button type="button" class="password-toggle absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700" data-target="login-password">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 eye-open">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 eye-closed hidden">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center">
+                    <input type="checkbox" id="remember-me" class="mr-2">
+                    <label for="remember-me" class="text-sm text-gray-600">Remember me</label>
+                </div>
+                <a href="#" class="text-sm text-green-600 hover:text-green-800">Forgot password?</a>
             </div>
             <button id="login-button" class="auth-button mb-4">Sign In</button>
             
@@ -163,9 +189,10 @@
                 <span class="text-gray-600">or</span>
             </div>
             
-            <div class="quick-login mb-4">
-                <div id="user-login" class="quick-login-button user-button">User Access</div>
-                <div id="admin-login" class="quick-login-button admin-button">Admin Access</div>
+            <div class="quick-login mb-4 grid grid-cols-3 gap-2">
+                <div id="user-login" class="quick-login-button user-button">Customer</div>
+                <div id="driver-login" class="quick-login-button driver-button">Driver</div>
+                <div id="admin-login" class="quick-login-button admin-button">Admin</div>
             </div>
             
             <button id="google-login" class="google-button w-full">
@@ -185,44 +212,68 @@
             </div>
             <div class="mb-4">
                 <label for="register-password" class="block text-gray-700 mb-2">Password</label>
-                <input type="password" id="register-password" class="auth-input" placeholder="Create a password">
+                <div class="relative">
+                    <input type="password" id="register-password" class="auth-input" placeholder="Create a password">
+                    <button type="button" class="password-toggle absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700" data-target="register-password">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 eye-open">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 eye-closed hidden">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="password-strength" class="mt-2 hidden">
+                    <div class="text-xs mb-1 password-strength-text">Password strength: <span>Weak</span></div>
+                    <div class="h-1 rounded-full bg-gray-200 w-full">
+                        <div class="password-strength-meter h-1 rounded-full bg-red-500" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
             <div class="mb-4">
                 <label for="register-confirm" class="block text-gray-700 mb-2">Confirm Password</label>
-                <input type="password" id="register-confirm" class="auth-input" placeholder="Confirm your password">
+                <div class="relative">
+                    <input type="password" id="register-confirm" class="auth-input" placeholder="Confirm your password">
+                    <button type="button" class="password-toggle absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700" data-target="register-confirm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 eye-open">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 eye-closed hidden">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="password-match" class="text-xs mt-1 hidden text-red-600">Passwords do not match</div>
             </div>
             <div class="mb-6">
-                <label for="register-role" class="block text-gray-700 mb-2">Account Type</label>
-                <select id="register-role" class="auth-input">
-                    <option value="customer">Customer</option>
-                    <option value="driver">Driver</option>
-                </select>
+                <label class="block text-gray-700 mb-2">Account Type</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="account-type-option border rounded p-3 cursor-pointer text-center" data-type="customer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto mb-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                        Customer
+                    </div>
+                    <div class="account-type-option border rounded p-3 cursor-pointer text-center" data-type="driver">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto mb-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                        </svg>
+                        Driver
+                    </div>
+                </div>
+                <input type="hidden" id="account-type" value="customer">
             </div>
             <button id="register-button" class="auth-button">Create Account</button>
         </div>
     </div>
 
-    <script src="auth-connector-netlify.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Check for hash in URL to switch to register tab
-            if (window.location.hash === '#register') {
-                const registerTab = document.getElementById('register-tab');
-                const loginTab = document.getElementById('login-tab');
-                const registerForm = document.getElementById('register-form');
-                const loginForm = document.getElementById('login-form');
-                
-                if (registerTab && loginTab && registerForm && loginForm) {
-                    registerTab.classList.add('active');
-                    loginTab.classList.remove('active');
-                    registerForm.classList.add('active');
-                    loginForm.classList.remove('active');
-                }
-            }
-            
-            // Auto-login if already authenticated
-            if (window.MyNgendaAuth && MyNgendaAuth.isAuthenticated()) {
-                MyNgendaAuth.redirectToDashboard();
+            // Check if we should show the register form based on URL hash
+            if(window.location.hash === '#register') {
+                document.getElementById('register-tab').click();
             }
             
             // Tab switching
@@ -236,7 +287,8 @@
                 registerTab.classList.remove('active');
                 loginForm.classList.add('active');
                 registerForm.classList.remove('active');
-                MyNgendaAuth.hideError();
+                window.location.hash = '';
+                hideError();
             });
             
             registerTab.addEventListener('click', function() {
@@ -244,105 +296,190 @@
                 loginTab.classList.remove('active');
                 registerForm.classList.add('active');
                 loginForm.classList.remove('active');
-                MyNgendaAuth.hideError();
+                window.location.hash = 'register';
+                hideError();
             });
             
-            // Login form submission
-            document.getElementById('login-button').addEventListener('click', async function() {
+            // Password visibility toggles
+            document.querySelectorAll('.password-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const passwordInput = document.getElementById(targetId);
+                    const eyeOpen = this.querySelector('.eye-open');
+                    const eyeClosed = this.querySelector('.eye-closed');
+                    
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        eyeOpen.classList.add('hidden');
+                        eyeClosed.classList.remove('hidden');
+                    } else {
+                        passwordInput.type = 'password';
+                        eyeOpen.classList.remove('hidden');
+                        eyeClosed.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Password strength checker
+            const passwordInput = document.getElementById('register-password');
+            const strengthMeter = document.getElementById('password-strength');
+            const strengthBar = strengthMeter.querySelector('.password-strength-meter');
+            const strengthText = strengthMeter.querySelector('.password-strength-text span');
+            
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                
+                if (password.length > 0) {
+                    strengthMeter.classList.remove('hidden');
+                    
+                    // Calculate password strength
+                    let strength = 0;
+                    if (password.length >= 8) strength += 25;
+                    if (password.match(/[a-z]+/)) strength += 25;
+                    if (password.match(/[A-Z]+/)) strength += 25;
+                    if (password.match(/[0-9]+/) || password.match(/[^a-zA-Z0-9]+/)) strength += 25;
+                    
+                    // Update strength meter
+                    strengthBar.style.width = strength + '%';
+                    
+                    if (strength < 25) {
+                        strengthBar.classList.remove('bg-yellow-500', 'bg-green-500');
+                        strengthBar.classList.add('bg-red-500');
+                        strengthText.textContent = 'Very Weak';
+                    } else if (strength < 50) {
+                        strengthBar.classList.remove('bg-red-500', 'bg-green-500');
+                        strengthBar.classList.add('bg-yellow-500');
+                        strengthText.textContent = 'Weak';
+                    } else if (strength < 75) {
+                        strengthBar.classList.remove('bg-red-500', 'bg-yellow-500');
+                        strengthBar.classList.add('bg-green-500');
+                        strengthText.textContent = 'Good';
+                    } else {
+                        strengthBar.classList.remove('bg-red-500', 'bg-yellow-500');
+                        strengthBar.classList.add('bg-green-500');
+                        strengthText.textContent = 'Strong';
+                    }
+                } else {
+                    strengthMeter.classList.add('hidden');
+                }
+                
+                // Check password match
+                checkPasswordMatch();
+            });
+            
+            // Password match checker
+            const confirmInput = document.getElementById('register-confirm');
+            const passwordMatch = document.getElementById('password-match');
+            
+            confirmInput.addEventListener('input', checkPasswordMatch);
+            
+            function checkPasswordMatch() {
+                const password = passwordInput.value;
+                const confirm = confirmInput.value;
+                
+                if (confirm.length > 0) {
+                    if (password === confirm) {
+                        passwordMatch.classList.add('hidden');
+                    } else {
+                        passwordMatch.classList.remove('hidden');
+                    }
+                } else {
+                    passwordMatch.classList.add('hidden');
+                }
+            }
+            
+            // Account type selection
+            const accountTypeOptions = document.querySelectorAll('.account-type-option');
+            const accountTypeInput = document.getElementById('account-type');
+            
+            accountTypeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    accountTypeOptions.forEach(opt => {
+                        opt.classList.remove('bg-green-50', 'border-green-500', 'text-green-700');
+                    });
+                    
+                    this.classList.add('bg-green-50', 'border-green-500', 'text-green-700');
+                    accountTypeInput.value = this.getAttribute('data-type');
+                });
+            });
+            
+            // Set initial account type selection
+            accountTypeOptions[0].click();
+            
+            // Show and hide error functions for demo
+            function showError(message) {
+                const errorElement = document.getElementById('auth-error');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                
+                // Hide error after 5 seconds
+                setTimeout(() => {
+                    hideError();
+                }, 5000);
+            }
+            
+            function hideError() {
+                const errorElement = document.getElementById('auth-error');
+                errorElement.style.display = 'none';
+            }
+            
+            // Demo login form submission
+            document.getElementById('login-button').addEventListener('click', function() {
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
                 
                 if (!email || !password) {
-                    MyNgendaAuth.showError('Please enter both email and password');
+                    showError('Please enter both email and password');
                     return;
                 }
                 
-                try {
-                    const success = await MyNgendaAuth.login(email, password);
-                    if (success) {
-                        MyNgendaAuth.redirectToDashboard();
-                    } else {
-                        MyNgendaAuth.showError('Invalid email or password');
-                    }
-                } catch (error) {
-                    MyNgendaAuth.showError('Login failed. Please try again.');
-                }
+                // For demo purposes only
+                showError('This is a demo page. In the actual app, this would log you in.');
             });
             
-            // Register form submission
-            document.getElementById('register-button').addEventListener('click', async function() {
+            // Demo register form submission
+            document.getElementById('register-button').addEventListener('click', function() {
                 const name = document.getElementById('register-name').value;
                 const email = document.getElementById('register-email').value;
                 const password = document.getElementById('register-password').value;
                 const confirm = document.getElementById('register-confirm').value;
-                const role = document.getElementById('register-role').value;
+                const accountType = document.getElementById('account-type').value;
                 
-                if (!name || !email || !password || !confirm || !role) {
-                    MyNgendaAuth.showError('Please fill in all fields');
+                if (!name || !email || !password || !confirm) {
+                    showError('Please fill in all fields');
                     return;
                 }
                 
                 if (password !== confirm) {
-                    MyNgendaAuth.showError('Passwords do not match');
+                    showError('Passwords do not match');
                     return;
                 }
                 
-                try {
-                    const success = await MyNgendaAuth.register({
-                        name,
-                        email,
-                        password,
-                        role
-                    });
-                    
-                    if (success) {
-                        // Redirect based on role
-                        const user = MyNgendaAuth.getCurrentUser();
-                        if (user && user.role === 'driver') {
-                            window.location.href = 'driver-dashboard.html';
-                        } else if (user && user.role === 'admin') {
-                            window.location.href = 'admin-dashboard.html';
-                        } else {
-                            window.location.href = 'customer-dashboard.html';
-                        }
-                    } else {
-                        MyNgendaAuth.showError('Registration failed. Please try a different email.');
-                    }
-                } catch (error) {
-                    MyNgendaAuth.showError('Registration failed. Please try again.');
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters long');
+                    return;
                 }
+                
+                // For demo purposes only
+                showError('This is a demo page. In the actual app, this would create your ' + accountType + ' account.');
             });
             
-            // Quick login buttons
-            document.getElementById('user-login').addEventListener('click', async function() {
-                try {
-                    const success = await MyNgendaAuth.login('user@myngenda.com', 'user123');
-                    if (success) {
-                        MyNgendaAuth.redirectToDashboard();
-                    } else {
-                        MyNgendaAuth.showError('Quick login failed. Please try manual login.');
-                    }
-                } catch (error) {
-                    MyNgendaAuth.showError('Login failed. Please try again.');
-                }
+            // Demo quick login buttons
+            document.getElementById('user-login').addEventListener('click', function() {
+                showError('This is a demo page. In the actual app, this would log you in as a customer.');
             });
             
-            document.getElementById('admin-login').addEventListener('click', async function() {
-                try {
-                    const success = await MyNgendaAuth.login('admin@myngenda.com', 'admin123');
-                    if (success) {
-                        MyNgendaAuth.redirectToDashboard();
-                    } else {
-                        MyNgendaAuth.showError('Quick login failed. Please try manual login.');
-                    }
-                } catch (error) {
-                    MyNgendaAuth.showError('Login failed. Please try again.');
-                }
+            document.getElementById('driver-login').addEventListener('click', function() {
+                showError('This is a demo page. In the actual app, this would log you in as a driver.');
             });
             
-            // Google login
+            document.getElementById('admin-login').addEventListener('click', function() {
+                showError('This is a demo page. In the actual app, this would log you in as an admin.');
+            });
+            
+            // Demo Google login
             document.getElementById('google-login').addEventListener('click', function() {
-                MyNgendaAuth.googleAuth();
+                showError('This is a demo page. In the actual app, this would open Google login.');
             });
         });
     </script>
